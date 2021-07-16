@@ -9,30 +9,26 @@
 import Foundation
 
 
-final class HSValidateAndTrackPurchaseOperation: HSAsynchronousOperation {
-    private typealias FailedResponse = (Error?, Any?)
+final class ValidateAndTrackPurchaseOperation: AsynchronousOperation {
+    private let purchase: Purchase
     
-    private let attribution: [HSAttributionService]
-    private let analytics: [HSAnalyticsService]
-    private let purchase: HSPurchase
-    private let debug: HSAppConfiguration.Debug
-
     private let success:(([AnyHashable: Any]) -> Void)?
     private let failure:((Error?, Any?) -> Void)?
     
-    private var error: FailedResponse?
-    private var response: [AnyHashable: Any] = [:]
-    
     private lazy var group = DispatchGroup()
     
-    init(configuration: HSAppConfiguration,
-         purchase: HSPurchase,
-         success:(([AnyHashable: Any]) -> Void)?,
-         failure:((Error?, Any?) -> Void)?) {
-        self.attribution = configuration.attribution
-        self.analytics = configuration.analytics
+    public var attribution: [AttributionService] = []
+    public var analytics: [AnalyticsService] = []
+
+    private var response: [AnyHashable: Any] = [:]
+    private var error: (Error?, Any?)?
+    
+    init(
+        purchase: Purchase,
+        success:(([AnyHashable: Any]) -> Void)?,
+        failure:((Error?, Any?) -> Void)?
+    ) {
         self.purchase = purchase
-        self.debug = configuration.debug
         self.success = success
         self.failure = failure
         super.init()
@@ -40,7 +36,16 @@ final class HSValidateAndTrackPurchaseOperation: HSAsynchronousOperation {
     
     override func main() {
         super.main()
-        debug.log("Validate and track in-app purchase")
+        App.log("Validate and track in-app purchase")
+        
+        guard attribution.count > 0 else {
+            DispatchQueue.main.async { [weak self] in
+                self?.failure?(HSError.integration("No attriution services connected").nserror, nil)
+                self?.finish()
+            }
+            return
+        }
+        
         attribution.forEach { service in
             group.enter()
             service.validateAndTrackInAppPurchase(
@@ -55,6 +60,7 @@ final class HSValidateAndTrackPurchaseOperation: HSAsynchronousOperation {
                 }
             )
         }
+        
         group.notify(queue: .main) { [weak self] in
             guard let self = self else { return }
             if let error = self.error {

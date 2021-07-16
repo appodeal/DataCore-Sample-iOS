@@ -8,25 +8,25 @@
 
 import Foundation
 
-final class HSTrackEventOperation: HSAsynchronousOperation {
-    private let analytics: [HSAnalyticsService]
+
+final class TrackEventOperation: AsynchronousOperation {
     private let event: String
     private let params: [String: Any]?
-    private let debug: HSAppConfiguration.Debug
     
-    init(configuration: HSAppConfiguration,
-         event: String,
-         params: [String: Any]?) {
-        self.analytics = configuration.analytics
+    var analytics: [AnalyticsService] = []
+    
+    init(
+        event: String,
+        params: [String: Any]?
+    ) {
         self.event = event
         self.params = params
-        self.debug = configuration.debug
         super.init()
     }
     
     override func main() {
         super.main()
-        debug.log("Track event")
+        App.log("Track event \(event), parameters: \(params?.description ?? "")")
         analytics.forEach { $0.trackEvent(event, customParameters: params) }
         finish()
     }

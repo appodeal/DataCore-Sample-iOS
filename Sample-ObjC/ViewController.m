@@ -10,12 +10,26 @@
 #import "AppDelegate.h"
 
 #import <HolisticSolutionSDK/HolisticSolutionSDK.h>
-
-
-@import Appodeal;
+#import <Appodeal/Appodeal.h>
+#import <Adjust/Adjust.h>
+#import <AppsFlyerLib/AppsFlyerLib.h>
+#import <Firebase.h>
+#import <FirebaseRemoteConfig.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 
 
 @interface ViewController ()
+
+@property (weak, nonatomic) IBOutlet UILabel *adjustVersion;
+@property (weak, nonatomic) IBOutlet UILabel *adjustAttID;
+@property (weak, nonatomic) IBOutlet UILabel *appsflyerVersion;
+@property (weak, nonatomic) IBOutlet UILabel *appsflyerAttID;
+@property (weak, nonatomic) IBOutlet UILabel *firebaseVersion;
+@property (weak, nonatomic) IBOutlet UILabel *firebaseKeyWords;
+@property (weak, nonatomic) IBOutlet UILabel *facebookVersion;
+@property (weak, nonatomic) IBOutlet UILabel *facebookAppID;
+@property (weak, nonatomic) IBOutlet UILabel *apdVersion;
+@property (weak, nonatomic) IBOutlet UILabel *apdInitialized;
 
 @end
 
@@ -25,35 +39,84 @@
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didInitialiseAd)
-                                                 name:kAdDidInitializeNotificationName
+                                                 name:completeNotification
                                                object:nil];
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
+- (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)didInitialiseAd {
-    [Appodeal showAd:AppodealShowStyleBannerTop rootViewController:self];
+    [Appodeal showAd:AppodealShowStyleBannerBottom rootViewController:self];
+    [self updateLabels];
 }
 
-- (IBAction)synthesizePurchase:(UIButton *)sender {
-    [HSApp validateAndTrackInAppPurchaseWithProductId:@"some product id"
-                                                price:@"9.99"
-                                             currency:@"USD"
-                                        transactionId:@"some transaction id"
-                                 additionalParameters:@{}
-                                              success:^(NSDictionary *response) {
-        NSLog(@"Purchase is valid. Data %@", response.description);
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *selected = [tableView cellForRowAtIndexPath:indexPath].textLabel.text;
+    if ([selected isEqualToString:@"Event"]) {
+        [self synthesizeEvent];
+    } else if ([selected isEqualToString:@"Purchase"]) {
+        [self synthesizePurchase:HSPurchaseTypeConsumable];
+    } else if ([selected isEqualToString:@"Subscription"]) {
+        [self synthesizePurchase:HSPurchaseTypeAutoRenewableSubscription];
+    } else {
+        return;
     }
-                                              failure:^(NSError *error, id response) {
-        NSLog(@"Error while validate purchase.");
+}
+
+- (void)synthesizePurchase:(HSPurchaseType)type {
+    NSDictionary *params = @{
+        @"Test Custom 1" : @"Value 1",
+        @"Test Custom 2" : @"Value 2"
+    };
+    __weak typeof(self) weakSelf = self;
+    [Appodeal.hs validateAndTrackInAppPurchaseWithProductId:@"some product id"
+                                                       type:type
+                                                      price:@"9.99"
+                                                   currency:@"USD"
+                                              transactionId:@"some transiton id"
+                                       additionalParameters:params
+                                                    success:^(NSDictionary *result) {
+        [weakSelf alertWithTitle:@"Purchase is valid" message:result.description];
+    }
+                                                    failure:^(NSError *error, id obj) {
+        [weakSelf alertWithTitle:@"Purchase is invalid" message:error.localizedDescription];
     }];
 }
 
-- (IBAction)synthesizeEvent:(UIButton *)sender {
-    [HSApp trackEvent:@"level_started" customParameters:nil];
+- (void)synthesizeEvent {
+    [Appodeal.hs trackEvent:@"level_started" customParameters:nil];
+}
+
+- (void)alertWithTitle:(NSString *)title message:(NSString * _Nullable)message {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleCancel handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)updateLabels {
+    //adjust
+    _adjustVersion.text = Adjust.sdkVersion;
+    _adjustAttID.text = Adjust.adid;
+    
+    //appsflyer
+    _appsflyerVersion.text = AppsFlyerLib.shared.getSDKVersion;
+    _appsflyerAttID.text = AppsFlyerLib.shared.getAppsFlyerUID;
+    
+    //firebase
+    _firebaseVersion.text = FIRFirebaseVersion();
+    _firebaseKeyWords.text = [[FIRRemoteConfig.remoteConfig allKeysFromSource:FIRRemoteConfigSourceRemote] componentsJoinedByString:@", "];
+    
+    //facebook
+    _facebookVersion.text = FBSDK_VERSION_STRING;
+    _facebookAppID.text = [NSBundle.mainBundle objectForInfoDictionaryKey:@"FacebookAppID"];
+    
+    //appodeal
+    _apdVersion.text = APDSdkVersionString();
+    _apdInitialized.text = [Appodeal isInitalizedForAdType:kAppodealTypes] ? @"true" : @"false";
 }
 
 @end

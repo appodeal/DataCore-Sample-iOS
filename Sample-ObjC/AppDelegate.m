@@ -12,10 +12,8 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 
 
-@import Appodeal;
-
-
-NSString *const kAdDidInitializeNotificationName    = @"AdDidInitialize";
+NSString *const completeNotification                = @"HSAppCompleteNotification";
+NSString *const kAppodealAppKey                     = @"dee74c5129f53fc629a44a690a02296694e3eef99f2d3a5f";
 AppodealAdType const kAppodealTypes                 = AppodealAdTypeBanner;
 BOOL const kConsent                                 = YES;
 
@@ -28,40 +26,26 @@ BOOL const kConsent                                 = YES;
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [self configureHolisticApp:application launchOptions:launchOptions];
-    return YES;
-}
-
-- (void)configureHolisticApp:(UIApplication)app launchOptions:(NSDictionary *)launchOptions {
-    // Enable logging
-    [Appodeal setLogLevel:APDLogLevelVerbose];
-    [Appodeal setTestingEnabled:YES];
-
-    // Facebook
-    [FBSDKApplicationDelegate.sharedInstance application:app
-                           didFinishLaunchingWithOptions:launchOptions];
+    [Appodeal.hs registerWithConnectors:@[
+        HSFirebaseConnector.class,
+        HSFacebookConnector.class,
+        HSAppsFlyerConnector.class,
+        HSAdjustConnector.class
+    ]];
     
-    // Create service connectors
-    HSAppsFlyerConnector *appsFlyer = [[HSAppsFlyerConnector alloc] initWithPlistName:@"Services-Info" error:nil];
-    HSFirebaseConnector *firebase = [[HSFirebaseConnector alloc] initWithKeys:@[] defaults:nil expirationDuration:60];
-    HSFacebookConnector *facebook = [[HSFacebookConnector alloc] init];
-    // Create advertising connector
-    HSAppodealConnector *appodeal = [[HSAppodealConnector alloc] init];
-    // Create HSApp configuration
-    NSArray <id<HSService>> *services = @[appsFlyer, firebase, facebook];
-    HSAppConfiguration *configuration = [[HSAppConfiguration alloc] initWithServices:services advertising:appodeal timeout:30];
-    // Configure
-    [HSApp configureWithConfiguration:configuration completion:^(NSError *error) {
-        if (error) {
-            NSLog(@"%@", error.localizedDescription);
-        }
-        /// Initialization
-        [Appodeal initializeWithApiKey:ServicesInfo.sharedInfo.appodealApiKey
-                                 types:kAppodealTypes
-                            hasConsent:kConsent];
-        [NSNotificationCenter.defaultCenter postNotificationName:kAdDidInitializeNotificationName
-                                                          object:nil];
+    HSAppConfiguration *configuration = [[HSAppConfiguration alloc] initWithAppKey:kAppodealAppKey
+                                                                           timeout:30
+                                                                             debug:HSAppConfigurationDebugEnabled
+                                                                           adTypes:kAppodealTypes];
+    
+    [Appodeal setTestingEnabled:YES];
+    [Appodeal.hs initializeWithApplication:application
+                             launchOptions:launchOptions
+                             configuration:configuration
+                                completion:^(NSError *error) {
+        [NSNotificationCenter.defaultCenter postNotificationName:completeNotification object:nil];
     }];
+    return YES;
 }
 
 #pragma mark - UISceneSession lifecycle

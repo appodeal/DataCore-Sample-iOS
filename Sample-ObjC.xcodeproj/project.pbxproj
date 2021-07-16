@@ -10,32 +10,16 @@
 		02C2E08A3B7C0CE54BCD3CF8 /* Pods_Sample_ObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22BA0CF9AD07CBAFD60374B9 /* Pods_Sample_ObjC.framework */; };
 		420F4ECA24A644D3002A242F /* Dummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F4EC924A644D3002A242F /* Dummy.swift */; };
 		4294A20124A4CA5E00F5FFD5 /* HolisticSolutionSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4294A20024A4CA5E00F5FFD5 /* HolisticSolutionSDK.framework */; };
-		4294A20224A4CA5E00F5FFD5 /* HolisticSolutionSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4294A20024A4CA5E00F5FFD5 /* HolisticSolutionSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		42AC598324654B280022E5A2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42AC597A24654B270022E5A2 /* ViewController.m */; };
 		42AC598424654B280022E5A2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 42AC597D24654B280022E5A2 /* main.m */; };
 		42AC598524654B280022E5A2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 42AC597E24654B280022E5A2 /* AppDelegate.m */; };
 		42AC598624654B280022E5A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42AC597F24654B280022E5A2 /* Assets.xcassets */; };
 		42AC598824654B280022E5A2 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 42AC598224654B280022E5A2 /* SceneDelegate.m */; };
-		42AC598D24654B310022E5A2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 42AC598924654B310022E5A2 /* Main.storyboard */; };
 		42AC598E24654B310022E5A2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 42AC598B24654B310022E5A2 /* LaunchScreen.storyboard */; };
 		42AC59A22465753C0022E5A2 /* ServicesInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 42AC59A12465753C0022E5A2 /* ServicesInfo.m */; };
-		42E7A43A2629799100F2A70C /* Services-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42E7A4382629799100F2A70C /* Services-Info.plist */; };
-		42E7A43B2629799100F2A70C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 42E7A4392629799100F2A70C /* GoogleService-Info.plist */; };
+		8A49028D2670B3A60089F689 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8A49028C2670B3A60089F689 /* Main.storyboard */; };
+		8ABC15CF2686233000694EF6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8ABC15CE2686233000694EF6 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		4294A20324A4CA5E00F5FFD5 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				4294A20224A4CA5E00F5FFD5 /* HolisticSolutionSDK.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		19CABF2424D7ED6971FB9F54 /* Pods-Sample-ObjC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sample-ObjC.debug.xcconfig"; path = "Target Support Files/Pods-Sample-ObjC/Pods-Sample-ObjC.debug.xcconfig"; sourceTree = "<group>"; };
@@ -52,12 +36,11 @@
 		42AC598024654B280022E5A2 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		42AC598124654B280022E5A2 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		42AC598224654B280022E5A2 /* SceneDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
-		42AC598A24654B310022E5A2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		42AC598C24654B310022E5A2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		42AC59A02465753C0022E5A2 /* ServicesInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServicesInfo.h; sourceTree = "<group>"; };
 		42AC59A12465753C0022E5A2 /* ServicesInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ServicesInfo.m; sourceTree = "<group>"; };
-		42E7A4382629799100F2A70C /* Services-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = "Services-Info.plist"; path = "Plists/Services-Info.plist"; sourceTree = SOURCE_ROOT; };
-		42E7A4392629799100F2A70C /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = "GoogleService-Info.plist"; path = "Plists/GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
+		8A49028C2670B3A60089F689 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		8ABC15CE2686233000694EF6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D46BEDC692A8B9512C6A1030 /* Pods-Sample-ObjC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sample-ObjC.release.xcconfig"; path = "Target Support Files/Pods-Sample-ObjC/Pods-Sample-ObjC.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -111,6 +94,7 @@
 				42AC598224654B280022E5A2 /* SceneDelegate.m */,
 				42AC598024654B280022E5A2 /* ViewController.h */,
 				42AC597A24654B270022E5A2 /* ViewController.m */,
+				8A49028C2670B3A60089F689 /* Main.storyboard */,
 			);
 			path = "Sample-ObjC";
 			sourceTree = "<group>";
@@ -118,14 +102,12 @@
 		42AC599724654CDE0022E5A2 /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				42E7A4392629799100F2A70C /* GoogleService-Info.plist */,
-				42E7A4382629799100F2A70C /* Services-Info.plist */,
+				8ABC15CE2686233000694EF6 /* GoogleService-Info.plist */,
 				42AC598124654B280022E5A2 /* Info.plist */,
 				42AC59A02465753C0022E5A2 /* ServicesInfo.h */,
 				42AC59A12465753C0022E5A2 /* ServicesInfo.m */,
 				42AC597D24654B280022E5A2 /* main.m */,
 				42AC598B24654B310022E5A2 /* LaunchScreen.storyboard */,
-				42AC598924654B310022E5A2 /* Main.storyboard */,
 				42AC597F24654B280022E5A2 /* Assets.xcassets */,
 				420F4EC924A644D3002A242F /* Dummy.swift */,
 			);
@@ -153,7 +135,6 @@
 				42AC596024654ADE0022E5A2 /* Frameworks */,
 				42AC596124654ADE0022E5A2 /* Resources */,
 				44DB2C2766A87740906B3D4D /* [CP] Embed Pods Frameworks */,
-				4294A20324A4CA5E00F5FFD5 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -203,11 +184,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42AC598D24654B310022E5A2 /* Main.storyboard in Resources */,
 				42AC598E24654B310022E5A2 /* LaunchScreen.storyboard in Resources */,
-				42E7A43B2629799100F2A70C /* GoogleService-Info.plist in Resources */,
-				42E7A43A2629799100F2A70C /* Services-Info.plist in Resources */,
+				8ABC15CF2686233000694EF6 /* GoogleService-Info.plist in Resources */,
 				42AC598624654B280022E5A2 /* Assets.xcassets in Resources */,
+				8A49028D2670B3A60089F689 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,14 +252,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		42AC598924654B310022E5A2 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				42AC598A24654B310022E5A2 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		42AC598B24654B310022E5A2 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

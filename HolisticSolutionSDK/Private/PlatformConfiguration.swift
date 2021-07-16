@@ -9,9 +9,10 @@
 import Foundation
 
 
-internal struct HSPlatformConfiguration: Decodable {
+internal struct PlatformConfiguration: Decodable {
     enum Keys: String, CodingKey {
         case appsFlyer = "AppsFlyer"
+        case adjust = "Adjust"
     }
     
     struct AppsFlyerData: Decodable {
@@ -30,11 +31,26 @@ internal struct HSPlatformConfiguration: Decodable {
         }
     }
     
-    let appsFlyer: AppsFlyerData
+    struct AdjustData: Decodable {
+        enum Keys: String, CodingKey {
+            case appToken = "AppToken"
+        }
+        
+        var appToken: String
+        
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: Keys.self)
+            appToken = try container.decode(String.self, forKey: .appToken)
+        }
+    }
+    
+    let appsFlyer: AppsFlyerData?
+    let adjust: AdjustData?
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: Keys.self)
-        appsFlyer = try container.decode(HSPlatformConfiguration.AppsFlyerData.self, forKey: .appsFlyer)
+        appsFlyer = try? container.decode(AppsFlyerData.self, forKey: .appsFlyer)
+        adjust = try? container.decode(AdjustData.self, forKey: .adjust)
     }
 }
 
@@ -43,11 +59,11 @@ internal extension PropertyListDecoder {
         case notFound
     }
     
-    func decodeConfiguration(fromPlist: String) throws -> HSPlatformConfiguration {
+    func decodeConfiguration(fromPlist: String) throws -> PlatformConfiguration {
         let xmlData: Data? = Bundle.main
             .path(forResource: fromPlist, ofType: "plist")
             .flatMap(FileManager.default.contents)
         guard let xml = xmlData else { throw HSDecodeError.notFound }
-        return try decode(HSPlatformConfiguration.self, from: xml)
+        return try decode(PlatformConfiguration.self, from: xml)
     }
 }

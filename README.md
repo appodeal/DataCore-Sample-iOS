@@ -9,11 +9,6 @@ Appodeal iOS SDK of version 2.6 and above to send attribution data to Stack Data
 * [Usage](#usage)
   + [Purchases](#purchases)
   + [Events](#events)
-* [Services](#services)
-  + [AppsFlyer](#appsflyer)
-  + [Firebase](#firebase)
-  + [Facebook](#facebook)
-  + [Appodeal](#appodeal)
 
 ## Integration
 
@@ -34,8 +29,8 @@ def holistic_solution
     # integrate only explicit sub pods
     #
     # pod 'HolisticSolutionSDK/Core'
-    # pod 'HolisticSolutionSDK/Appodeal'
     # pod 'HolisticSolutionSDK/AppsFlyer'
+    # pod 'HolisticSolutionSDK/Adjust'
     # pod 'HolisticSolutionSDK/Firebase'
     # pod 'HolisticSolutionSDK/Facebook'
 end
@@ -53,7 +48,7 @@ end
 
 ## Usage
 
-Holistic Solution SDK will initialise AppsFlyer, fetch Firebase Remote Config and sync all required data to Appodeal. There is `HSApp` class to provide described functional. Call configure method with instance of `HSAppConfiguration` will trigger initialisation.
+Holistic Solution SDK will synchronize consent status (GDRP, CCPA, ATT), initialise Adjsut, AppsFlyer, fetch Firebase Remote Config and sync all required data to Appodeal. After this HS SDK will initialize Appodeal. There is `HSApp` class to provide described functional. Call configure method with instance of `HSAppConfiguration` will trigger initialisation.
 
 Required parameters for `HSAppConfiguration` is array of **service connecors** and **advertising** service connectors. By default they are AppsFlyer, FirebaseRemoteConfig and Appodeal. **Timeout** in this case is timeout for **one** operation: starting attribution service or fetching remote config. By default the value is **30 sec**.
 
@@ -65,11 +60,13 @@ Required parameters for `HSAppConfiguration` is array of **service connecors** a
 
 ```obj-c
 #import <HolisticSolutionSDK/HolisticSolutionSDK.h>
+#import <Appodeal/Appodeal.h>
 ```
 
 *Swift*
 ```swift
 import HolisticSolutionSDK
+import Appodeal
 ```
 
 2. Add folowing code at application did finish launching event.
@@ -78,77 +75,24 @@ import HolisticSolutionSDK
 
 ``` obj-c
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // AppsFlyer
-    HSAppsFlyerConnector *appsFlyer = [[HSAppsFlyerConnector alloc] initWithDevKey:<#(NSString * _Nonnull)#>
-                                                                             appId:<#(NSString * _Nonnull)#>
-                                                                              keys:<#(NSArray<NSString *> * _Nonnull)#>];
-    // Firebase
-    HSFirebaseConnector *firebase = [[HSFirebaseConnector alloc] initWithKeys:<#(NSArray<NSString *> * _Nonnull)#>
-                                                                     defaults:<#(NSDictionary<NSString *,NSObject *> * _Nullable)#>
-                                                           expirationDuration:<#(NSTimeInterval)#>];
-    // Facebook
-    HSFacebookConnector *facebook = [[HSFacebookConnector alloc] init];
-    // Appodeal 
-    HSAppodealConnector *appodeal = [[HSAppodealConnector alloc] init];
-    // Configure HSApp
-    NSArray <id<HSService>> *services = @[appsFlyer, firebase, facebook];
-    HSAppConfiguration *configuration = [[HSAppConfiguration alloc] initWithServices:services 
-                                                                         advertising:appodeal
-                                                                             timeout:<#(NSTimeInterval)#>];
-    [HSApp configureWithConfiguration:configuration completion:^(NSError *error) {
-        if (error) {
-            NSLog(@"%@", error.localizedDescription);
-        }
-        // Initialise Appodeal here
-    }];
+    // TODO:  
     return YES;
 }
 ```
 
 *Swift*
 ``` swift
-func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    // AppsFlyer
-    let appsFlyer = HSAppsFlyerConnector(devKey: <#T##String#>, 
-                                         appId: <#T##String#>,   
-                                         keys: <#T##[String]#>)
-    // Firebase
-    let firebase = HSFirebaseConnector(keys: <#T##[String]#>, 
-                                       defaults: <#T##[String : NSObject]?#>, 
-                                       expirationDuration: <#T##TimeInterval#>)
-    // Facebook
-    let facebook = HSFacebookConnector()
-    // Appodeal 
-    let appodeal = HSAppodealConnector()
-    // Configure services
-    let services: [HSService] = [appsFlyer, firebase, facebook]
-    let configuration = HSAppConfiguration(services: services, 
-                                           advertising: appodeal, 
-                                           timeout: <#T##TimeInterval#>)
-    HSApp.configure(configuration: configuration) { error in
-        error.map { print($0.localizedDescription) }
-        // Initialize Appodeal here
-    }
-    return true
+func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+) -> Bool {
+    // TODO: 
 }
-```
-
-Check that HSApp has been initialized:
-
-*Objective-C*
-```obj-c
-BOOL inititalised = HSApp.initialised;
-```
-
-*Swift*
-```swift
-let inititalised = HSApp.initialised
 ```
 
 ### Purchases
 
-Holistic solution SDK allows to validate and track in-app purchases by AppsFlyer connector. Data returned in `success` of `failure` blocks are the same to AppsFlyer data. [See docs](https://support.appsflyer.com/hc/en-us/articles/207032066-iOS-SDK-integration-for-developers#core-apis-53-inapp-purchase-validation).
+Holistic solution SDK allows to validate and track in-app purchases by AppsFlyer or Adjust connector. Bloks `success` of `failure` indicates result of validation.
 
 *Objective-C*
 ``` obj-c
@@ -189,80 +133,3 @@ Holistic solution SDK allows to send events to Firebase, AppsFlyer and Facebook 
 HSApp.trackEvent(<#T##eventName: String##String#>, 
                  customParameters: <#T##[String : Any]?#>)
 ```
-
-## Services
- 
-There is description of all supported service connectors.
-
-### AppsFlyer
-
-Connector for **AppsFlyer** attribution system. After `-[HSApp configureWithConfiguration:completion:]` was called this connector will start `AppsFlyer SDK` and set conversion listeners.
-
-| Parameter | Description |
-|---|---|
-| devKey | Developer key |
-| appId | Application ID |
-| keys | Array of keys from conversion data that connector will send to Appodeal. If it is empty, connector will send all conversion data object |
-
-To get `AppsFlyerTrackerDelegate` set `delegate` property of connector.
-
-*Objective-C*
-```obj-c
-appsFlyer.delegate = self;
-```
-
-*Swift*
-```swift
-appsFlyer.delegate = self
-```
-
-### Firebase
-
-Connector for **Firebase Remote Config** and **Firebase Analytics** system. After `-[HSApp configureWithConfiguration:completion:]` was called this connector will start `Firebase App` (if it wasn't started) and tries to fetch and activate config.
-
-| Parameter | Description |
-|---|---|
-| defaults | Default config |
-| expirationDuration | Expiration duration for config |
-| keys | Array of keys from config that connector will send to Appodeal. If it is empty, connector will send all config object |
-
-### Facebook
-
-Connector for **Facebook Analytics** system. Facebook analytics automatic initialisation should be enabled. Also project's `Info.plist` should contains [all required keys](https://developers.facebook.com/docs/app-events/getting-started-app-events-ios#step-5--configure-your-project).
-
-Connect application delegate and scene delegate according to step 6 from the [official documentation](https://developers.facebook.com/docs/app-events/getting-started-app-events-ios#step-6--connect-your-app-delegate-and-scene-delegate). 
-
-*Objective-C*
-```obj-c
-#import "AppDelegate.h"
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-
-
-@implementation AppDelegate
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [FBSDKApplicationDelegate.sharedInstance application:app
-                           didFinishLaunchingWithOptions:launchOptions];
-    return YES;
-}
-
-```
-
-*Swift*
-```swift
-import FBSDKCoreKit
-
-
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-    func application(
-        _ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
-    ) -> Bool {
-    	ApplicationDelegate.shared.application(app, didFinishLaunchingWithOptions: launchOptions)
-    }
-```
-
-### Appodeal
-
-Connector for **Appodeal SDK**. After `-[HSApp configureWithConfiguration:completion:]` was called this connector will just recieve data from attribution and product testing systems. **It will not initialise Appodeal**

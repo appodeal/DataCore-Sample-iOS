@@ -9,29 +9,33 @@
 import Foundation
 
 
-struct HSPurchase {
+struct Purchase {
     var productId, price, currency, transactionId: String
+    var type: PurchaseType
     var additionalParameters: [String : Any]
 }
 
-protocol HSAttributionService: HSService {
-    func collect(receiveAttributionId: @escaping ((String) -> Void),
-                receiveData: @escaping (([AnyHashable: Any]?) -> Void))
+
+protocol AttributionService: Service {
+    func collect(
+        receiveAttributionId: @escaping ((String) -> Void),
+        receiveData: @escaping (([AnyHashable: Any]?) -> Void)
+    )
     
     func validateAndTrackInAppPurchase(
-        _ purchase: HSPurchase,
+        _ purchase: Purchase,
         success:(([AnyHashable: Any]) -> Void)?,
         failure:((Error?, Any?) -> Void)?
     )
 }
 
-protocol HSProductTestingService: HSService {
+
+protocol ProductTestingService: Service {
     func activateConfig(completion: @escaping (([AnyHashable: Any]?) -> Void))
 }
 
 
-protocol HSAnalyticsService: HSService {
-    var trackingEnabled: Bool { get set }
+protocol AnalyticsService: Service {
     func trackEvent(_ event: String, customParameters: [String: Any]?)
-    func trackInAppPurchase(_ purchase: HSPurchase)
+    func trackInAppPurchase(_ purchase: Purchase)
 }

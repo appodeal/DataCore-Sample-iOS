@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+@import Appodeal;
 
-FOUNDATION_EXPORT NSString *const kAdDidInitializeNotificationName;
+FOUNDATION_EXPORT NSString *const completeNotification;
+FOUNDATION_EXPORT AppodealAdType const kAppodealTypes;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
